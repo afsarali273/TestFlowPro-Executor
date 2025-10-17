@@ -1,0 +1,157 @@
+name: Run Tests Matrix
+
+on:
+  workflow_dispatch:
+    inputs:
+      environments:
+        description: 'Environments to test (comma-separated: dev,qa,prod)'
+        required: true
+        default: 'qa'
+        type: string
+      testTypes:
+        description: 'Test types to run (comma-separated: API,UI)'
+        required: true
+        default: 'API,UI'
+        type: string
+      tags:
+        description: 'Tags to filter (comma-separated: @smoke,@regression,@UserService)'
+        required: false
+        type: string
+
+jobs:
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Set up test matrix
+        id: set-matrix
+        run: |
+          ENVIRONMENTS="${{ github.event.inputs.environments }}"
+          TEST_TYPES="${{ github.event.inputs.testTypes }}"
+          TAGS="${{ github.event.inputs.tags }}"
+
+          # Convert comma-separated values to JSON arrays
+          ENV_ARRAY=$(echo "$ENVIRONMENTS" | jq -R 'split(",")')
+          TYPE_ARRAY=$(echo "$TEST_TYPES" | jq -R 'split(",")')
+
+          # Build matrix include
+          MATRIX=$(jq -n \
+            --argjson envs "$ENV_ARRAY" \
+            --argjson types "$TYPE_ARRAY" \
+            --arg tags "$TAGS" \
+            '{
+              include: [
+                $envs[] as $env | $types[] as $type | {
+                  environment: $env,
+                  testType: $type,
+                  tags: $tags
+                }
+              ]
+            }')
+
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+          echo "Generated matrix: $MATRIX"
+
+  run-tests:
+    needs: prepare-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.prepare-matrix.outputs.matrix) }}
+      fail-fast: false
+    name: Test ${{ matrix.testType }} on ${{ matrix.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '23.8.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        env:
+          ENV: ${{ matrix.environment }}
+        run: |
+          ARGS=""
+
+          # Add tag filters if specified
+          if [ ! -z "${{ matrix.tags }}" ]; then
+            IFS=',' read -ra TAG_ARRAY <<< "${{ matrix.tags }}"
+            for tag in "${TAG_ARRAY[@]}"; do
+              tag=$(echo "$tag" | xargs) # trim whitespace
+              if [[ "$tag" == @* ]]; then
+                if [[ "$tag" == *Service* ]]; then
+                  ARGS="$ARGS --serviceName='$tag'"
+                else
+                  ARGS="$ARGS --suiteType='$tag'"
+                fi
+              fi
+            done
+          fi
+
+          # Add test type filter
+          if [ "${{ matrix.testType }}" != "all" ]; then
+            ARGS="$ARGS --testType='${{ matrix.testType }}'"
+          fi
+
+          echo "Running tests with args: $ARGS on environment: $ENV"
+          npx ts-node src/runner.ts $ARGS
+
+      - name: Generate HTML reports
+        if: always()
+        run: npm run report:html
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports-${{ matrix.testType }}-${{ matrix.environment }}
+          path: reports/
+          retention-days: 30
+
+  collect-results:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Generate summary report
+        run: |
+          echo "# Test Execution Summary" > summary.md
+          echo "" >> summary.md
+          echo "| Environment | Test Type | Status | Reports |" >> summary.md
+          echo "|-------------|-----------|--------|---------|" >> summary.md
+
+          for dir in test-reports-*; do
+            if [ -d "$dir" ]; then
+              ENV=$(echo "$dir" | cut -d'-' -f3)
+              TYPE=$(echo "$dir" | cut -d'-' -f4)
+
+              # Check if reports exist
+              if [ -n "$(find "$dir" -name "*.json" 2>/dev/null)" ]; then
+                STATUS="✅ Completed"
+                REPORTS="[View Reports](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+              else
+                STATUS="❌ Failed"
+                REPORTS="No reports"
+              fi
+
+              echo "| $ENV | $TYPE | $STATUS | $REPORTS |" >> summary.md
+            fi
+          done
+
+          cat summary.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload combined reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-test-reports
+          path: test-reports-*/
+          retention-days: 30

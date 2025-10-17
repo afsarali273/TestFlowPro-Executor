@@ -1,0 +1,77 @@
+name: Run Tests by Tags
+
+on:
+  workflow_dispatch:
+    inputs:
+      serviceName:
+        description: 'Service Name Tag (e.g., @UserService)'
+        required: false
+        type: string
+      suiteType:
+        description: 'Suite Type Tag (e.g., @smoke, @regression)'
+        required: false
+        type: string
+      environment:
+        description: 'Environment to run tests against'
+        required: true
+        default: 'qa'
+        type: choice
+        options:
+          - dev
+          - qa
+          - prod
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '23.8.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests with tags
+        env:
+          ENV: ${{ github.event.inputs.environment }}
+        run: |
+          # Build CLI args dynamically based on input
+          ARGS=""
+
+          if [ ! -z "${{ github.event.inputs.serviceName }}" ]; then
+            ARGS="$ARGS --serviceName='${{ github.event.inputs.serviceName }}'"
+          fi
+
+          if [ ! -z "${{ github.event.inputs.suiteType }}" ]; then
+            ARGS="$ARGS --suiteType='${{ github.event.inputs.suiteType }}'"
+          fi
+
+          echo "Running tests with args: $ARGS on environment: $ENV"
+          npx ts-node src/runner.ts $ARGS
+
+      - name: Generate HTML reports
+        if: always()
+        run: npm run report:html
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports-tags-${{ github.event.inputs.environment }}
+          path: reports/
+          retention-days: 30
+
+      - name: Upload HTML reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: html-reports-tags-${{ github.event.inputs.environment }}
+          path: '**/*.html'
+          retention-days: 30

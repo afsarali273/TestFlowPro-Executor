@@ -1,0 +1,152 @@
+{
+  "id": "User_Registration_Suite_QzpcVXNl",
+  "suiteName": "User Registration Suite",
+  "applicationName": "",
+  "type": "API",
+  "baseUrl": "https://www.abibliadigital.com.br",
+  "tags": [
+    {
+      "serviceName": "digitalLibrary"
+    },
+    {
+      "suiteType": "@regression"
+    }
+  ],
+  "testCases": [
+    {
+      "name": "Register New User -Valid data",
+      "status": "Not Started",
+      "type": "REST",
+      "testData": [
+        {
+          "name": "Create a new User- valid",
+          "method": "POST",
+          "endpoint": "/api/users",
+          "headers": {
+            "Content-Type": "application/json",
+            "Afsar": "dsdfsdf"
+          },
+          "cookies": {},
+          "preProcess": [
+            {
+              "function": "generateUser"
+            }
+          ],
+          "body": {
+            "name": "{{name}}",
+            "email": "{{email}}",
+            "password": "102030",
+            "notifications": true
+          },
+          "assertions": [
+            {
+              "id": "assertion_1751207016384",
+              "type": "statusCode",
+              "expected": 200
+            },
+            {
+              "id": "assertion_1751207049211",
+              "type": "equals",
+              "jsonPath": "$.name",
+              "expected": "{{name}}"
+            },
+            {
+              "id": "assertion_1751207069962",
+              "type": "equals",
+              "jsonPath": "$.email",
+              "expected": "{{email}}"
+            },
+            {
+              "id": "assertion_1751207081541",
+              "type": "exists",
+              "jsonPath": "$.token"
+            }
+          ],
+          "store": {
+            "token": "$.token"
+          },
+          "localStore": {},
+          "enabled": true
+        },
+        {
+          "name": "Create new User - empty body",
+          "method": "POST",
+          "endpoint": "/api/users",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "cookies": {},
+          "preProcess": [],
+          "body": {},
+          "assertions": [
+            {
+              "id": "assertion_1751207324795",
+              "type": "equals",
+              "jsonPath": "$.msg",
+              "expected": "{name}(String), {email}(String), {notifications}(Boolean) and {password}(String) are required"
+            },
+            {
+              "id": "assertion_1751207346986",
+              "type": "statusCode",
+              "expected": 400
+            }
+          ],
+          "store": {},
+          "localStore": {},
+          "enabled": true
+        }
+      ],
+      "testSteps": [],
+      "enabled": true
+    },
+    {
+      "name": "Get User By Email ",
+      "status": "Not Started",
+      "type": "REST",
+      "testData": [
+        {
+          "name": "Get User By Email - valid",
+          "method": "GET",
+          "endpoint": "/api/users/{{email}}",
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {{token}}"
+          },
+          "cookies": {},
+          "preProcess": [],
+          "assertions": [
+            {
+              "id": "assertion_1751211996702",
+              "type": "equals",
+              "jsonPath": "$.name",
+              "expected": "{{name}}"
+            },
+            {
+              "id": "assertion_1751212011712",
+              "type": "equals",
+              "jsonPath": "$.email",
+              "expected": "{{email}}"
+            },
+            {
+              "id": "assertion_1751212022745",
+              "type": "statusCode",
+              "expected": 200
+            },
+            {
+              "id": "assertion_1751212032806",
+              "type": "exists",
+              "jsonPath": "$.token"
+            }
+          ],
+          "store": {},
+          "localStore": {},
+          "enabled": true
+        }
+      ],
+      "testSteps": [],
+      "enabled": true
+    }
+  ],
+  "status": "Not Started",
+  "filePath": "C:\\Users\\Afsar\\IdeaProjects\\TestFlowPro\\testSuites\\login-test\\Create_new_User.json"
+}

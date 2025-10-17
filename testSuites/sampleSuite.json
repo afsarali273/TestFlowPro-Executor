@@ -1,0 +1,271 @@
+{
+  "id": "User_API_Suite_Demo_L1VzZXJz",
+  "suiteName": "User API Suite Demo",
+  "applicationName": "user api suite demo",
+  "type": "API",
+  "baseUrl": "RESTFUL_API_URL",
+  "tags": [
+    {
+      "serviceName": "@UserService"
+    },
+    {
+      "suiteType": "@smoke"
+    }
+  ],
+  "testCases": [
+    {
+      "name": "Get Single User",
+      "status": "Not Started",
+      "type": "REST",
+      "testData": [
+        {
+          "name": "Fetch User with ID 2",
+          "method": "GET",
+          "endpoint": "/objects?id=3&id=5&id=10",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "preProcess": [
+            {
+              "function": "getDataBaseName",
+              "db": "",
+              "args": [
+                "select user, name. from UserDB"
+              ],
+              "mapTo": {
+                "user": "user",
+                "name": "name"
+              }
+            },
+            {
+              "function": "getAccessToken",
+              "args": [
+                "id"
+              ],
+              "var": "id"
+            }
+          ],
+          "assertions": [
+            {
+              "type": "equals",
+              "jsonPath": "$.[0].name",
+              "expected": "Apple iPhone 12 Pro Max"
+            },
+            {
+              "type": "equals",
+              "jsonPath": "$.[1].data.price",
+              "expected": 689.99
+            }
+          ],
+          "responseSchema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "name",
+                "data"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "color": {
+                      "type": "string"
+                    },
+                    "capacity GB": {
+                      "type": "number"
+                    },
+                    "price": {
+                      "type": "number"
+                    },
+                    "Capacity": {
+                      "type": "string"
+                    },
+                    "Screen size": {
+                      "type": "number"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "store": {
+            "userName": "$.[0].name",
+            "variable2": "$.[1].id"
+          }
+        },
+        {
+          "name": "Fetch User with ID 2",
+          "method": "GET",
+          "endpoint": "/objects?id=3&id=5&id=10",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "preProcess": null,
+          "assertions": [
+            {
+              "type": "equals",
+              "jsonPath": "$.[0].name",
+              "expected": "Apple iPhone 12 Pro Max"
+            },
+            {
+              "type": "equals",
+              "jsonPath": "$.[1].data.price",
+              "expected": 689.99
+            }
+          ],
+          "responseSchema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "name",
+                "data"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "color": {
+                      "type": "string"
+                    },
+                    "capacity GB": {
+                      "type": "number"
+                    },
+                    "price": {
+                      "type": "number"
+                    },
+                    "Capacity": {
+                      "type": "string"
+                    },
+                    "Screen size": {
+                      "type": "number"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "store": {
+            "userName": "$.[0].name"
+          }
+        }
+      ],
+      "testSteps": []
+    },
+    {
+      "name": "List of all objects",
+      "status": "Not Started",
+      "type": "REST",
+      "testData": [
+        {
+          "name": "Listing All Objects Using the endpoint",
+          "method": "GET",
+          "endpoint": "/objects",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "preProcess": null,
+          "assertions": [
+            {
+              "type": "equals",
+              "jsonPath": "$.[0].name",
+              "expected": "Apple iPhone 12 Pro Max"
+            },
+            {
+              "type": "size",
+              "jsonPath": "$.",
+              "expected": 5
+            },
+            {
+              "type": "statusCode",
+              "expected": 200
+            }
+          ],
+          "store": {
+            "userName": "$.[0].name"
+          }
+        }
+      ],
+      "testSteps": []
+    },
+    {
+      "name": "Add Object",
+      "status": "Not Started",
+      "type": "REST",
+      "testData": [
+        {
+          "name": "Adding a new Single Object",
+          "method": "POST",
+          "endpoint": "/objects",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "preProcess": [
+            {
+              "var": "randomEmail",
+              "function": "faker.email"
+            },
+            {
+              "var": "encryptedPassword",
+              "function": "encrypt",
+              "args": [
+                "P@ss1234"
+              ]
+            }
+          ],
+          "body": {
+            "name": "Apple MacBook Pro 16",
+            "data": {
+              "year": 2019,
+              "price": 1849.99,
+              "CPU model": "Intel Core i9",
+              "Hard disk size": "1 TB"
+            }
+          },
+          "assertions": [
+            {
+              "type": "exists",
+              "jsonPath": "$.id"
+            },
+            {
+              "type": "equals",
+              "jsonPath": "$.name",
+              "expected": "Apple MacBook Pro 16"
+            },
+            {
+              "type": "statusCode",
+              "expected": 200
+            }
+          ],
+          "store": {
+            "newObjectID": "$.id"
+          }
+        }
+      ],
+      "testSteps": []
+    }
+  ],
+  "status": "Not Started",
+  "filePath": "/Users/afsarali/Repository/TestFlowPro/testData/sampleSuite.json"
+}

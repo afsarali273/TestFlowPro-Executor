@@ -1,0 +1,149 @@
+{
+  "id": "Flights_search_API_Test_Suite_L1VzZXJz",
+  "suiteName": "Flights-search API Test Suite",
+  "applicationName": "make_my_trip",
+  "type": "API",
+  "baseUrl": "https://flights-cb.makemytrip.global",
+  "tags": [],
+  "testCases": [
+    {
+      "id": "tc_1757776157373_97bg1ivcj",
+      "name": "GET Flights-search",
+      "status": "Passed",
+      "type": "REST",
+      "testData": [
+        {
+          "name": "Valid Request",
+          "method": "GET",
+          "endpoint": "/api/flights-search/autosuggest?query=SIN&limit=10&region=ae&currency=AED&language=eng&cmpId=",
+          "headers": {
+            "accept": "application/json",
+            "accept-language": "en-US,en;q=0.9,or-IN;q=0.8,or;q=0.7",
+            "access-control-allow-credentials": "true",
+            "app-ver": "1.0.0",
+            "cache-control": "no-cache",
+            "currency": "AED",
+            "device-id": "90768a96-85de-4217-ad6b-7cd4c3adf44e",
+            "domain": "ae",
+            "entity-name": "global",
+            "language": "eng",
+            "mcid": "90768a96-85de-4217-ad6b-7cd4c3adf44e",
+            "origin": "https://www.makemytrip.global",
+            "os": "Mac OS",
+            "pfm": "DESKTOP",
+            "priority": "u=1, i",
+            "profile-type": "PERSONAL",
+            "region": "ae",
+            "src": "mmt",
+            "user-country": "SG",
+            "user-currency": "SGD",
+            "x-user-cc": "SG",
+            "x-user-ip": "42.60.113.248",
+            "x-user-rc": "SINGAPORE"
+          },
+          "preProcess": [],
+          "assertions": [
+            {
+              "type": "statusCode",
+              "expected": 200
+            }
+          ],
+          "store": {},
+          "localStore": {},
+          "enabled": true
+        },
+        {
+          "name": "Missing Query Parameter",
+          "method": "GET",
+          "endpoint": "/api/flights-search/autosuggest?limit=10&region=ae&currency=AED&language=eng&cmpId=",
+          "headers": {
+            "ab": "{",
+            "accept": "application/json",
+            "accept-language": "en-US,en;q=0.9,or-IN;q=0.8,or;q=0.7",
+            "access-control-allow-credentials": "true",
+            "app-ver": "1.0.0",
+            "cache-control": "no-cache",
+            "currency": "AED",
+            "device-id": "90768a96-85de-4217-ad6b-7cd4c3adf44e",
+            "domain": "ae",
+            "entity-name": "global",
+            "language": "eng",
+            "mcid": "90768a96-85de-4217-ad6b-7cd4c3adf44e",
+            "origin": "https://www.makemytrip.global",
+            "os": "Mac OS",
+            "pfm": "DESKTOP",
+            "priority": "u=1, i",
+            "profile-type": "PERSONAL",
+            "region": "ae",
+            "src": "mmt",
+            "user-country": "SG",
+            "user-currency": "SGD",
+            "x-user-cc": "SG",
+            "x-user-ip": "42.60.113.248",
+            "x-user-rc": "SINGAPORE"
+          },
+          "preProcess": [],
+          "assertions": [
+            {
+              "type": "statusCode",
+              "expected": 400
+            },
+            {
+              "type": "equals",
+              "jsonPath": "$.error.message",
+              "expected": "Query parameter is missing"
+            }
+          ],
+          "store": {},
+          "localStore": {},
+          "enabled": true
+        },
+        {
+          "name": "Invalid Currency",
+          "method": "GET",
+          "endpoint": "/api/flights-search/autosuggest?query=SIN&limit=10&region=ae&currency=INVALID&language=eng&cmpId=",
+          "headers": {
+            "ab": "{",
+            "accept": "application/json",
+            "accept-language": "en-US,en;q=0.9,or-IN;q=0.8,or;q=0.7",
+            "access-control-allow-credentials": "true",
+            "app-ver": "1.0.0",
+            "cache-control": "no-cache",
+            "currency": "AED",
+            "device-id": "90768a96-85de-4217-ad6b-7cd4c3adf44e",
+            "domain": "ae",
+            "entity-name": "global",
+            "language": "eng",
+            "mcid": "90768a96-85de-4217-ad6b-7cd4c3adf44e",
+            "origin": "https://www.makemytrip.global",
+            "os": "Mac OS",
+            "pfm": "DESKTOP",
+            "priority": "u=1, i",
+            "profile-type": "PERSONAL",
+            "region": "ae",
+            "src": "mmt",
+            "user-country": "SG",
+            "user-currency": "SGD",
+            "x-user-cc": "SG",
+            "x-user-ip": "42.60.113.248",
+            "x-user-rc": "SINGAPORE"
+          },
+          "preProcess": [],
+          "assertions": [
+            {
+              "type": "statusCode",
+              "expected": 400
+            }
+          ],
+          "store": {},
+          "localStore": {},
+          "enabled": true
+        }
+      ],
+      "testSteps": [],
+      "enabled": true
+    }
+  ],
+  "status": "Running",
+  "filePath": "/Users/afsarali/Repository/TestFlowPro/testSuites/Flights_search_API_Test_Suite.json"
+}

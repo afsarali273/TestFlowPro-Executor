@@ -1,0 +1,176 @@
+{
+  "id": "Sample_Login_UI_Suite_L1VzZXJz",
+  "suiteName": "Sample Login UI Suite",
+  "applicationName": "",
+  "type": "UI",
+  "baseUrl": "https://the-internet.herokuapp.com",
+  "tags": [
+    {
+      "priority": "high"
+    },
+    {
+      "type": "ui"
+    }
+  ],
+  "testCases": [
+    {
+      "name": "Valid Login Test",
+      "status": "Not Started",
+      "type": "UI",
+      "testData": [],
+      "testSteps": [
+        {
+          "id": "step1",
+          "keyword": "openBrowser",
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        },
+        {
+          "id": "step2",
+          "keyword": "goto",
+          "value": "https://the-internet.herokuapp.com/login",
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        },
+        {
+          "id": "step3",
+          "keyword": "type",
+          "locator": {
+            "strategy": "label",
+            "value": "Username"
+          },
+          "value": "tomsmith",
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        },
+        {
+          "id": "step4",
+          "keyword": "type",
+          "locator": {
+            "strategy": "label",
+            "value": "Password"
+          },
+          "value": "SuperSecretPassword!",
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        },
+        {
+          "id": "step5",
+          "keyword": "click",
+          "locator": {
+            "strategy": "role",
+            "value": "button"
+          },
+          "value": "bggd",
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        },
+        {
+          "id": "step6",
+          "keyword": "assertText",
+          "locator": {
+            "strategy": "css",
+            "value": ".flash.success"
+          },
+          "value": "You logged into a secure area!",
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        },
+        {
+          "id": "step7",
+          "keyword": "screenshot",
+          "value": "login-success.png",
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        }
+      ]
+    },
+    {
+      "name": "Invalid Login Test",
+      "status": "Not Started",
+      "type": "UI",
+      "testData": [],
+      "testSteps": [
+        {
+          "id": "step1",
+          "keyword": "openBrowser",
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        },
+        {
+          "id": "step2",
+          "keyword": "goto",
+          "value": "https://the-internet.herokuapp.com/login",
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        },
+        {
+          "id": "step3",
+          "keyword": "type",
+          "locator": {
+            "strategy": "label",
+            "value": "Username"
+          },
+          "value": "invalidUser",
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        },
+        {
+          "id": "step4",
+          "keyword": "type",
+          "locator": {
+            "strategy": "label",
+            "value": "Password"
+          },
+          "value": "wrongPassword",
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        },
+        {
+          "id": "step5",
+          "keyword": "click",
+          "locator": {
+            "strategy": "role",
+            "value": "button"
+          },
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        },
+        {
+          "id": "step6",
+          "keyword": "assertText",
+          "locator": {
+            "strategy": "css",
+            "value": ".flash.error"
+          },
+          "value": "Your username is invalid!",
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        },
+        {
+          "id": "step7",
+          "keyword": "screenshot",
+          "value": "login-failure.png",
+          "assertions": [],
+          "store": {},
+          "skipOnFailure": false
+        }
+      ]
+    }
+  ],
+  "status": "Not Started",
+  "filePath": "/Users/afsarali/Repository/TestFlowPro/testData/web-ui-test.json"
+}

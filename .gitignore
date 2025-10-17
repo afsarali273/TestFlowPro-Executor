@@ -1,0 +1,8 @@
+node_modules
+frontend/TestEditor/node_modules
+.env
+.DS_Store
+dist
+screenshots
+.idea
+reports

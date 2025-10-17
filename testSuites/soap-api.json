@@ -1,0 +1,79 @@
+{
+  "id": "SOAP_Number_Conversion_Suite_L1VzZXJz",
+  "suiteName": "SOAP Number Conversion Suite",
+  "applicationName": "soap number conversion",
+  "type": "API",
+  "baseUrl": "https://www.dataaccess.com/webservicesserver/numberconversion.wso",
+  "tags": [
+    {
+      "serviceName": "@NumberService"
+    },
+    {
+      "suiteType": "@soap"
+    }
+  ],
+  "testCases": [
+    {
+      "name": "Number to Words",
+      "status": "Not Started",
+      "type": "SOAP",
+      "testData": [
+        {
+          "name": "Convert 100 to Words",
+          "method": "POST",
+          "endpoint": "/",
+          "headers": {
+            "Content-Type": "text/xml; charset=utf-8",
+            "SOAPAction": ""
+          },
+          "preProcess": null,
+          "body": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:web=\"http://www.dataaccess.com/webservicesserver/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <web:NumberToWords>\n         <web:ubiNum>100</web:ubiNum>\n      </web:NumberToWords>\n   </soapenv:Body>\n</soapenv:Envelope>",
+          "assertions": [
+            {
+              "type": "equals",
+              "xpathExpression": "//*[local-name()='NumberToWordsResult']/text()",
+              "expected": "one hundred "
+            }
+          ],
+          "store": {},
+          "localStore": {},
+          "enabled": true
+        }
+      ],
+      "testSteps": [],
+      "enabled": true
+    },
+    {
+      "name": "Number to Dollars",
+      "status": "Not Started",
+      "type": "SOAP",
+      "testData": [
+        {
+          "name": "Convert 123.45 to Dollars",
+          "method": "POST",
+          "endpoint": "/",
+          "headers": {
+            "Content-Type": "text/xml; charset=utf-8",
+            "SOAPAction": ""
+          },
+          "preProcess": null,
+          "body": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:web=\"http://www.dataaccess.com/webservicesserver/\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <web:NumberToDollars>\n         <web:dNum>123.45</web:dNum>\n      </web:NumberToDollars>\n   </soapenv:Body>\n</soapenv:Envelope>",
+          "assertions": [
+            {
+              "type": "equals",
+              "xpathExpression": "//*[local-name()='NumberToDollarsResult']/text()",
+              "expected": "one hundred twenty three dollars and forty five cents"
+            }
+          ],
+          "store": {},
+          "localStore": {},
+          "enabled": true
+        }
+      ],
+      "testSteps": [],
+      "enabled": true
+    }
+  ],
+  "status": "Not Started",
+  "filePath": "/Users/afsarali/Repository/TestFlowPro/testSuites/soap-api.json"
+}
