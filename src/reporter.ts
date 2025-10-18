@@ -1,6 +1,21 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+// Function to find the project root by looking for package.json
+function findProjectRoot(): string {
+    let currentDir = __dirname;
+    
+    while (currentDir !== path.dirname(currentDir)) {
+        if (fs.existsSync(path.join(currentDir, 'package.json'))) {
+            return currentDir;
+        }
+        currentDir = path.dirname(currentDir);
+    }
+    
+    // Fallback to the directory containing this file
+    return path.resolve(__dirname, '..');
+}
+
 export interface StepResult {
     stepId: string;
     keyword: string;
@@ -101,10 +116,11 @@ export class Reporter {
             results: this.report,
         };
 
-        const fileName = `result-${this.suiteName.replace(/\s+/g, '_')}-${new Date()
+        const fileName = `result-${this.suiteName.replace(/[\s><:"\|\?\*\/\\]/g, '_')}-${new Date()
             .toISOString()
             .replace(/[:.]/g, '-')}.json`;
-        const fullPath = path.normalize(path.join(__dirname, '../reports', fileName));
+        const projectRoot = findProjectRoot();
+        const fullPath = path.normalize(path.join(projectRoot, 'reports', fileName));
         fs.mkdirSync(path.dirname(fullPath), { recursive: true });
         fs.writeFileSync(fullPath, JSON.stringify(output, null, 2), 'utf-8');
         console.log(`\n📄 Report written to: ${fullPath}`);
