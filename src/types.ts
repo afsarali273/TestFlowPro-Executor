@@ -213,9 +213,32 @@ export type TestStepKeyword =
     | "customCode"
     | "apiCall"
     | "soapCall"
-  | "waitForEvent"
-  | "clickAndWaitForPopup"
-  | "switchToTab";
+    | "tableClick"
+    | "tableGetText"
+    | "tableAssertText"
+    | "tableAssertCount"
+    | "tableGetRowCount"
+    | "tableGetColumnCount"
+    | "tableFindRow"
+    | "tableSelectRow"
+    | "tableSortColumn"
+    | "tableFilterRows"
+    | "waitForEvent"
+    | "clickAndWaitForPopup"
+    | "switchToTab"
+    | "assertEqual"
+    | "assertNotEqual"
+    | "assertContains"
+    | "assertNotContains"
+    | "assertEqualIgnoreCase"
+    | "assertStartsWith"
+    | "assertEndsWith"
+    | "assertGreaterThan"
+    | "assertLessThan"
+    | "assertEmpty"
+    | "assertNotEmpty"
+    | "assertNull"
+    | "assertNotNull";
 
 // Custom step function definition
 export interface CustomStepFunction {
@@ -245,6 +268,16 @@ export interface TestStep {
     headers?: Record<string, string>; // Request headers
     body?: any; // Request body
     responseSchema?: any; // Expected response schema
+    // Table operation properties
+    tableOperation?: {
+        row?: number | string; // Row index or identifier
+        column?: number | string; // Column index or header name
+        cellValue?: string; // Expected or search value
+        action?: string; // Action to perform (click, getText, etc.)
+    };
+    // Assertion properties
+    assertionActual?: string; // Variable name or value to assert
+    assertionExpected?: string; // Expected value for assertion
 }
 
 
